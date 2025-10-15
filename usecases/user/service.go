@@ -1,13 +1,15 @@
 package user
 
 import (
+	infra "kornkk/Infra"
 	"kornkk/entities"
-	"kornkk/middleware"
 )
 
 type Service interface {
 	Register(user *entities.RegisterInput) (*entities.User, error)
+	GetAllUsers() ([]entities.User, error)
 	GetUserByID(id uint) (*entities.User, error)
+	UpdateUser(id uint, user *entities.UpdateUserInput) (*entities.User, error)
 	DeleteUser(id uint) error
 }
 
@@ -20,7 +22,7 @@ func NewService(repo Repo) Service {
 }
 
 func (s *service) Register(user *entities.RegisterInput) (*entities.User, error) {
-	passwordHash, err := middleware.HashPassword(user.Password)
+	passwordHash, err := infra.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +38,21 @@ func (s *service) Register(user *entities.RegisterInput) (*entities.User, error)
 	return createdUser, nil
 }
 
+func (s *service) GetAllUsers() ([]entities.User, error) {
+	return s.repo.GetAllUsers()
+}
+
 func (s *service) GetUserByID(id uint) (*entities.User, error) {
 	return s.repo.GetUserByID(id)
+}
+
+func (s *service) UpdateUser(id uint, updateUser *entities.UpdateUserInput) (*entities.User, error) {
+	return s.repo.UpdateUser(id, &entities.User{
+		Username:   updateUser.Username,
+		Email:      updateUser.Email,
+		Password:   updateUser.Password,
+		UserRoleID: updateUser.UserRoleID,
+	})
 }
 
 func (s *service) DeleteUser(id uint) error {

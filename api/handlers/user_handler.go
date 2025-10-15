@@ -28,6 +28,17 @@ func AddUser(service user.Service) fiber.Handler {
 	}
 }
 
+func GetAllUsers(service user.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		users, err := service.GetAllUsers()
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+		return c.JSON(presenter.UsersSuccessResponse(&users))
+	}
+}
+
 func GetUserByID(service user.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		id, err := c.ParamsInt("id")
@@ -45,6 +56,28 @@ func GetUserByID(service user.Service) fiber.Handler {
 		return c.JSON(presenter.UserSuccessResponse(user))
 	}
 
+}
+
+func UpdateUser(service user.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+		var input entities.UpdateUserInput
+		err = c.BodyParser(&input)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+		updatedUser, err := service.UpdateUser(uint(id), &input)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+		return c.JSON(presenter.UserSuccessResponse(updatedUser))
+	}
 }
 
 func DeleteUser(service user.Service) fiber.Handler {

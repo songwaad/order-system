@@ -28,3 +28,10 @@ type LoginInput struct {
 	Identity string `json:"identity" validate:"required"` // can be username or email
 	Password string `json:"password" validate:"required"`
 }
+
+type UpdateUserInput struct {
+	Username   string `json:"username,omitempty"`
+	Email      string `json:"email,omitempty"`
+	Password   string `json:"password,omitempty"`
+	UserRoleID uint   `json:"user_role_id,omitempty"`
+}
