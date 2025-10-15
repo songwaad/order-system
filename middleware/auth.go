@@ -1,6 +1,10 @@
 package middleware
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"net/mail"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
@@ -10,4 +14,9 @@ func CheckPasswordHash(password, hash string) bool {
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
+}
+
+func IsEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
