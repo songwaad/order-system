@@ -8,6 +8,7 @@ import (
 type Service interface {
 	Register(user *entities.RegisterInput) (*entities.User, error)
 	GetUserByID(id uint) (*entities.User, error)
+	DeleteUser(id uint) error
 }
 
 type service struct {
@@ -37,4 +38,8 @@ func (s *service) Register(user *entities.RegisterInput) (*entities.User, error)
 
 func (s *service) GetUserByID(id uint) (*entities.User, error) {
 	return s.repo.GetUserByID(id)
+}
+
+func (s *service) DeleteUser(id uint) error {
+	return s.repo.DeleteUser(id)
 }

@@ -8,12 +8,10 @@ import (
 
 type Repo interface {
 	CreateUser(user *entities.User) (*entities.User, error)
-	// GetUsers() ([]entities.User, error)
 	GetUserByID(id uint) (*entities.User, error)
 	GetUserByUsername(username string) (*entities.User, error)
 	GetUserByEmail(email string) (*entities.User, error)
-	// UpdateUser(user *entities.User) (*entities.User, error)
-	// DeleteUser(id uint) error
+	DeleteUser(id uint) error
 }
 
 type repo struct {
@@ -55,4 +53,8 @@ func (r *repo) GetUserByEmail(email string) (*entities.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *repo) DeleteUser(id uint) error {
+	return r.db.Delete(&entities.User{}, id).Error
 }
