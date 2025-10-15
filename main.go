@@ -1,0 +1,39 @@
+package main
+
+import (
+	"fmt"
+	"kornkk/api/routes"
+	"kornkk/database"
+	"kornkk/entities"
+	"kornkk/usecases/user"
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+)
+
+func main() {
+	db, err := database.GetDB()
+	if err != nil {
+		log.Fatal("Database Connection Error:", err)
+	}
+
+	fmt.Println("Database Connection successfully!")
+
+	db.AutoMigrate(&entities.User{})
+	db.AutoMigrate(&entities.Role{})
+
+	userRepo := user.NewRepo(db)
+	userService := user.NewService(userRepo)
+
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.Send([]byte("Korn KK"))
+	})
+
+	api := app.Group("/api")
+	routes.UserRoute(api, userService)
+	log.Fatal(app.Listen(":8080"))
+
+}
