@@ -27,3 +27,22 @@ func AddUser(service user.Service) fiber.Handler {
 		return c.JSON(presenter.UserSuccessResponse(createdUser))
 	}
 }
+
+func GetUserByID(service user.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+
+		user, err := service.GetUserByID(uint(id))
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(presenter.UserErrorResponse(err))
+		}
+
+		return c.JSON(presenter.UserSuccessResponse(user))
+	}
+
+}

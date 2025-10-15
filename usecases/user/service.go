@@ -7,6 +7,7 @@ import (
 
 type Service interface {
 	Register(user *entities.RegisterInput) (*entities.User, error)
+	GetUserByID(id uint) (*entities.User, error)
 }
 
 type service struct {
@@ -23,13 +24,17 @@ func (s *service) Register(user *entities.RegisterInput) (*entities.User, error)
 		return nil, err
 	}
 	createdUser, err := s.repo.CreateUser(&entities.User{
-		Username: user.Username,
-		Email:    user.Email,
-		Password: passwordHash,
-		RoleID:   user.RoleID,
+		Username:   user.Username,
+		Email:      user.Email,
+		Password:   passwordHash,
+		UserRoleID: user.RoleID,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return createdUser, nil
+}
+
+func (s *service) GetUserByID(id uint) (*entities.User, error) {
+	return s.repo.GetUserByID(id)
 }

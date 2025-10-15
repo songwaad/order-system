@@ -9,4 +9,5 @@ import (
 
 func UserRoute(app fiber.Router, service user.Service) {
 	app.Post("/users", handlers.AddUser(service))
+	app.Get("/users/:id", handlers.GetUserByID(service))
 }
