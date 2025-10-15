@@ -21,7 +21,7 @@ func main() {
 	fmt.Println("Database Connection successfully!")
 
 	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Role{})
+	db.AutoMigrate(&entities.UserRole{})
 
 	userRepo := user.NewRepo(db)
 	userService := user.NewService(userRepo)
