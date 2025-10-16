@@ -5,14 +5,21 @@ import (
 	"kornkk/api/routes"
 	"kornkk/database"
 	"kornkk/entities"
+	"kornkk/usecases/auth"
 	"kornkk/usecases/user"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	db, err := database.GetDB()
 	if err != nil {
 		log.Fatal("Database Connection Error:", err)
@@ -26,6 +33,8 @@ func main() {
 	userRepo := user.NewRepo(db)
 	userService := user.NewService(userRepo)
 
+	authService := auth.NewService(userRepo)
+
 	app := fiber.New()
 	app.Use(cors.New())
 	app.Get("/", func(ctx *fiber.Ctx) error {
@@ -34,6 +43,7 @@ func main() {
 
 	api := app.Group("/api")
 	routes.UserRoute(api, userService)
+	routes.AuthRoute(api, authService)
 	log.Fatal(app.Listen(":8080"))
 
 }
