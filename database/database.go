@@ -5,16 +5,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func GetDB() (*gorm.DB, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return nil, err
-	}
 
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
