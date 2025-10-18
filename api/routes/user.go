@@ -1,6 +1,7 @@
 package routes
 
 import (
+	infra "kornkk/Infra"
 	"kornkk/api/handlers"
 	"kornkk/usecases/user"
 
@@ -9,8 +10,9 @@ import (
 
 func UserRoute(app fiber.Router, service user.Service) {
 	app.Post("/users", handlers.AddUser(service))
-	app.Get("/users", handlers.GetAllUsers(service))
-	app.Get("/users/:id", handlers.GetUserByID(service))
-	app.Patch("/users/:id", handlers.UpdateUser(service))
-	app.Delete("/users/:id", handlers.DeleteUser(service))
+
+	app.Get("/users", infra.Protected(), handlers.GetAllUsers(service))
+	app.Get("/users/:id", infra.Protected(), handlers.GetUserByID(service))
+	app.Patch("/users/:id", infra.Protected(), handlers.UpdateUser(service))
+	app.Delete("/users/:id", infra.Protected(), handlers.DeleteUser(service))
 }

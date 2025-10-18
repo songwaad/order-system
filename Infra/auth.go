@@ -4,6 +4,7 @@ import (
 	"kornkk/entities"
 	"net/mail"
 	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -32,6 +33,8 @@ func JwtClaims(user *entities.User) (string, error) {
 	claims["username"] = user.Username
 	claims["email"] = user.Email
 	claims["role"] = user.UserRole.Name
+	claims["exp"] = time.Now().Add(24 * time.Hour).Unix() // Token expires in 24 hours
+	claims["iat"] = time.Now().Unix()                     // Issued at
 
 	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {

@@ -9,4 +9,5 @@ import (
 
 func AuthRoute(app fiber.Router, service auth.Service) {
 	app.Post("/login", handlers.Login(service))
+	app.Post("/logout", handlers.Logout())
 }
