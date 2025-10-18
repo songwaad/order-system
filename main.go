@@ -36,7 +36,16 @@ func main() {
 	authService := auth.NewService(userRepo)
 
 	app := fiber.New()
-	app.Use(cors.New())
+	app.Use(cors.New(
+		cors.Config{
+			AllowOrigins:     "http://localhost:5173",
+			AllowMethods:     "GET,POST,PUT,PATCH,DELETE",
+			AllowHeaders:     "Origin,Content-Type,Accept,Authorization",
+			ExposeHeaders:    "Content-Length",
+			MaxAge:           300,
+			AllowCredentials: true,
+		},
+	))
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.Send([]byte("Korn KK"))
 	})

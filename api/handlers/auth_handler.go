@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func Login(service auth.Service) fiber.Handler {
@@ -64,6 +65,21 @@ func Logout() fiber.Handler {
 			"status": true,
 			"data": &fiber.Map{
 				"message": "Logout successful",
+			},
+			"error": nil,
+		})
+	}
+}
+
+func Me() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userToken := c.Locals("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+
+		return c.JSON(&fiber.Map{
+			"status": true,
+			"data": &fiber.Map{
+				"user": claims,
 			},
 			"error": nil,
 		})
